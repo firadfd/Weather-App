@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="weatherData"
+            type="fd.firad.thunderstorm.model.WeatherResponse" />
+
     </data>
 
     <RelativeLayout
@@ -15,9 +19,9 @@
 
         <RelativeLayout
             android:id="@+id/layCity"
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="50dp"
+            android:layout_margin="10dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -30,7 +34,7 @@
                 app:strokeWidth="2dp">
 
                 <EditText
-                    android:id="@+id/sms"
+                    android:id="@+id/cityName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -83,10 +87,10 @@
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/inter"
                 android:letterSpacing="0.15"
-                android:text="39"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="50sp" />
+                android:textSize="50sp"
+                app:intValueToString="@{weatherData.temp}" />
 
             <TextView
                 android:id="@+id/tempSign"
@@ -161,10 +165,10 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:fontFamily="@font/inter"
-                    android:text="86"
                     android:textColor="#FF303345"
                     android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:intValueToString="@{weatherData.humidity}" />
             </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -227,10 +231,10 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:fontFamily="@font/inter"
-                    android:text="4.83"
                     android:textColor="#FF303345"
                     android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:doubleValueToString="@{weatherData.wind_speed}" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -292,10 +296,10 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:fontFamily="@font/inter"
-                    android:text="6:10 am"
                     android:textColor="#FF303345"
                     android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:longValueToLocalTime="@{weatherData.sunrise}" />
             </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -358,10 +362,10 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:fontFamily="@font/inter"
-                    android:text="6:38 pm"
                     android:textColor="#FF303345"
                     android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:longValueToLocalTime="@{weatherData.sunset}" />
             </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>

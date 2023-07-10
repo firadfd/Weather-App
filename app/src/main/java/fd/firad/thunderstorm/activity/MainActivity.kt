@@ -1,7 +1,11 @@
 package fd.firad.thunderstorm.activity
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -10,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import fd.firad.thunderstorm.R
 import fd.firad.thunderstorm.databinding.ActivityMainBinding
 import fd.firad.thunderstorm.viewmodel.WeatherViewModel
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -20,10 +25,33 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
 
 
-        viewModel.getWeather("Rangpur")
+        viewModel.getWeather("Kurigram")
         viewModel.weather.observe(this@MainActivity, Observer {
             Log.e("TAG", "onCreate: ${it.toString()}")
+            binding.weatherData = it
         })
 
+        binding.searchCity.setOnClickListener {
+            hideKeyboard(this)
+            val city = binding.cityName.text.toString()
+            if (city.isEmpty()) {
+                Toast.makeText(this@MainActivity, "Enter a city", Toast.LENGTH_SHORT).show()
+            } else if (city == "") {
+                Toast.makeText(this@MainActivity, "Enter a city", Toast.LENGTH_SHORT).show()
+            } else {
+                viewModel.getWeather(city)
+                binding.city.text = city.toString()
+            }
+        }
+
+    }
+
+    private fun hideKeyboard(activity: Activity) {
+        val imm = activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        var view = activity.currentFocus
+        if (view == null) {
+            view = View(activity)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

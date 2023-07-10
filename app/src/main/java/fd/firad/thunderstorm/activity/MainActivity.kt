@@ -1,6 +1,11 @@
 package fd.firad.thunderstorm.activity
 
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkInfo
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,11 +30,16 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
 
 
-        viewModel.getWeather("Kurigram")
-        viewModel.weather.observe(this@MainActivity, Observer {
-            Log.e("TAG", "onCreate: ${it.toString()}")
-            binding.weatherData = it
-        })
+        if (checkConnectivity()) {
+            viewModel.getWeather("Kurigram")
+            viewModel.weather.observe(this@MainActivity, Observer {
+                Log.e("TAG", "onCreate: ${it.toString()}")
+                binding.weatherData = it
+            })
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+        }
+
 
         binding.searchCity.setOnClickListener {
             hideKeyboard(this)
@@ -53,5 +63,30 @@ class MainActivity : AppCompatActivity() {
             view = View(activity)
         }
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun checkConnectivity(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val wifiNetworkInfo: NetworkInfo? =
+            connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+        val isWifiConnected = wifiNetworkInfo?.isConnected ?: false
+
+        val mobileNetworkInfo: NetworkInfo? =
+            connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+        val isMobileConnected = mobileNetworkInfo?.isConnected ?: false
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network = connectivityManager.activeNetwork
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+            val isInternetConnected =
+                networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    ?: false
+
+            isInternetConnected || (isWifiConnected && isMobileConnected)
+        } else {
+            isWifiConnected || isMobileConnected
+        }
     }
 }

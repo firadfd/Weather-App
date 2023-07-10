@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import fd.firad.thunderstorm.R
+import fd.firad.thunderstorm.Response
 import fd.firad.thunderstorm.databinding.ActivityMainBinding
 import fd.firad.thunderstorm.viewmodel.WeatherViewModel
 
@@ -31,10 +32,23 @@ class MainActivity : AppCompatActivity() {
 
 
         if (checkConnectivity()) {
-            viewModel.getWeather("Kurigram")
+            viewModel.getWeather("Rangpur")
             viewModel.weather.observe(this@MainActivity, Observer {
                 Log.e("TAG", "onCreate: ${it.toString()}")
-                binding.weatherData = it
+                when (it) {
+                    is Response.Loading -> {
+                        Toast.makeText(this@MainActivity, "Fetching Data", Toast.LENGTH_SHORT).show()
+                    }
+
+                    is Response.Error -> {
+                        Toast.makeText(this@MainActivity, it.error, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is Response.Success -> {
+                        binding.weatherData = it.weatherResponse
+                    }
+                }
+
             })
         } else {
             Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()

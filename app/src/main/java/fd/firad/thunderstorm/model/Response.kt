@@ -1,9 +1,7 @@
-package fd.firad.thunderstorm
-
-import fd.firad.thunderstorm.model.WeatherResponse
+package fd.firad.thunderstorm.model
 
 sealed class Response() {
-    class Loading() : Response()
+    object Loading : Response()
     class Success(val weatherResponse: WeatherResponse) : Response()
     class Error(val error: String) : Response()
 }
